@@ -5,7 +5,7 @@ from datetime import datetime
 
 # 1. Cấu hình trang Dashboard giao diện rộng (Wide Mode)
 st.set_page_config(
-    page_title="Excel Combiner Pro",
+    page_title="Excel Combiner",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -67,7 +67,7 @@ st.markdown('<div class="sub-header">Automated system for consolidating and stan
 col1, col2 = st.columns(2)
 
 with col1:
-    st.markdown("### 📥 1. Child / Source Files")
+    st.markdown("### 📥 1. Source Files")
     uploaded_files = st.file_uploader(
         "Drag or select multiple individual files:",
         type=["xlsx", "xls", "csv"],
