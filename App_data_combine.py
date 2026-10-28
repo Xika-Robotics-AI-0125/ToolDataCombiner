@@ -5,7 +5,7 @@ from datetime import datetime
 
 # 1. Cấu hình trang Dashboard giao diện rộng (Wide Mode)
 st.set_page_config(
-    page_title="Excel Combiner Pro",
+    page_title="Excel Combiner",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -37,60 +37,60 @@ st.markdown("""
 # 2. Thanh bên (Sidebar) - Các thiết lập & Tùy chọn nâng cao
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/732/732220.png", width=50)
-    st.title("⚙️ Cấu Hình Nâng Cao")
-    st.caption("Tùy chỉnh quy tắc xử lý dữ liệu")
+    st.title("⚙️ Advanced configuration")
+    st.caption("Customize data processing rules")
     
     st.divider()
     
-    st.subheader("1. Xử lý dữ liệu")
-    remove_dup = st.checkbox("Xóa trùng lặp (Remove Duplicates)", value=True)
-    drop_na_rows = st.checkbox("Bỏ các dòng trống toàn bộ", value=True)
-    add_timestamp = st.checkbox("Thêm cột Thời Gian Gộp", value=True)
-    add_source_file = st.checkbox("Thêm cột Tên File Nguồn", value=True)
+    st.subheader("1. Data processing")
+    remove_dup = st.checkbox("Remove duplicates", value=True)
+    drop_na_rows = st.checkbox("Remove all empty lines", value=True)
+    add_timestamp = st.checkbox("Add Consolidated Time Column", value=True)
+    add_source_file = st.checkbox("Add Source Filename Column", value=True)
     
     st.divider()
     
-    st.subheader("2. Tùy chọn Sheet Excel")
+    st.subheader("2. Excel Sheet Options")
     sheet_option = st.radio(
-        "Chọn Sheet cần lấy dữ liệu:",
-        ["Sheet đầu tiên", "Gộp tất cả các Sheet trong file"]
+        "Select the sheet from which to retrieve data:",
+        [""First sheet", "Combine all sheets in the file""]
     )
     
     st.divider()
-    st.info("💡 **Mẹo:** Kiểm tra kỹ tên các cột tiêu đề ở các file lẻ để đảm bảo khớp dữ liệu chính xác nhất.")
+    st.info("💡 **Tip:** Double-check the header column names in the individual files to ensure the most accurate data matching.")
 
 # 3. Màn hình chính (Main Content)
 st.markdown('<div class="main-header">⚡ Excel Data Combiner Pro</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">Hệ thống tự động hợp nhất và chuẩn hóa dữ liệu Excel đa nguồn</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-header">Automated system for consolidating and standardizing Excel data from multiple sources</div>', unsafe_allow_html=True)
 
 # Chia layout thành 2 cột tải file
 col1, col2 = st.columns(2)
 
 with col1:
-    st.markdown("### 📥 1. Các file Excel nhỏ")
+    st.markdown("### 📥 1. Child File")
     uploaded_files = st.file_uploader(
-        "Kéo thả hoặc chọn nhiều file lẻ từ máy tính:",
+        "Drag or select multiple files from your computer:",
         type=["xlsx", "xls", "csv"],
         accept_multiple_files=True,
-        help="Có thể chọn cùng lúc hàng chục file Excel"
+        help="You can select dozens of Excel files at once."
     )
 
 with col2:
-    st.markdown("### 📗 2. File Total gốc (Tùy chọn)")
+    st.markdown("### 📗 2. Total File")
     total_file = st.file_uploader(
-        "Thả file Total đã có để nối tiếp dữ liệu mới:",
+        "Drop the existing 'Total' file to append new data:",
         type=["xlsx", "xls", "csv"],
-        help="Dữ liệu mới sẽ được nối tiếp xuống dưới dữ liệu cũ"
+        help="New data will be appended below the existing data."
     )
 
 st.divider()
 
 # 4. Thao tác xử lý dữ liệu khi bấm nút
-if st.button("🚀 BẮT ĐẦU XỬ LÝ & GỘP DỮ LIỆU", type="primary", use_container_width=True):
+if st.button("START", type="primary", use_container_width=True):
     if not uploaded_files and total_file is None:
-        st.error("⚠️ Vui lòng tải lên ít nhất 1 file Excel lẻ hoặc 1 file Total gốc!")
+        st.error("⚠️ Please upload at least one individual Excel file or one original Total file!")
     else:
-        with st.spinner("⏳ Đang phân tích, làm sạch và gộp dữ liệu..."):
+        with st.spinner("⏳ Analyzing, cleaning, and merging data..."):
             all_dfs = []
             file_count = 0
             
@@ -140,10 +140,10 @@ if st.button("🚀 BẮT ĐẦU XỬ LÝ & GỘP DỮ LIỆU", type="primary", u
                 final_df['Thời_Gian_Gộp'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             st.balloons() # Hiệu ứng bóng bay chúc mừng
-            st.success("🎉 **Hoàn tất xử lý dữ liệu thành công!**")
+            st.success("🎉 **Data processing completed successfully!**")
             
             # Hiển thị Dashboard Thống Kê (KPIs)
-            st.markdown("### 📊 Thống Kê Kết Quả")
+            st.markdown("### 📊 Results Statistics")
             m1, m2, m3 = st.columns(3)
             m1.metric(label="Tổng số File đã gộp", value=f"{file_count} File")
             m2.metric(label="Tổng số Dòng dữ liệu", value=f"{len(final_df):,} dòng")
@@ -152,13 +152,13 @@ if st.button("🚀 BẮT ĐẦU XỬ LÝ & GỘP DỮ LIỆU", type="primary", u
             st.divider()
 
             # Xem trước dữ liệu trực quan
-            st.markdown("### 👀 Xem Trước Dữ Liệu Tổng Hợp")
+            st.markdown("### 👀 Preview Aggregated Data")
             st.dataframe(final_df, use_container_width=True, height=350)
 
             st.divider()
 
             # Khu vực Tải Xuất Dữ Liệu Đa Dạng
-            st.markdown("### 📥 Tải Kết Quả Về Máy")
+            st.markdown("### 📥 Download Results to Device")
             d_col1, d_col2 = st.columns(2)
             
             # Xuất Excel
@@ -167,7 +167,7 @@ if st.button("🚀 BẮT ĐẦU XỬ LÝ & GỘP DỮ LIỆU", type="primary", u
                 final_df.to_excel(writer, index=False)
             
             d_col1.download_button(
-                label="📗 Tải về file EXCEL (.xlsx)",
+                label="📗 Download file EXCEL (.xlsx)",
                 data=buffer_excel.getvalue(),
                 file_name=f"Total_Export_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -177,7 +177,7 @@ if st.button("🚀 BẮT ĐẦU XỬ LÝ & GỘP DỮ LIỆU", type="primary", u
             # Xuất CSV
             csv_data = final_df.to_csv(index=False).encode('utf-8-sig')
             d_col2.download_button(
-                label="📄 Tải về file CSV (.csv)",
+                label="📄 Download file CSV (.csv)",
                 data=csv_data,
                 file_name=f"Total_Export_{datetime.now().strftime('%Y%m%d_%H%M')}.csv",
                 mime="text/csv",
